@@ -15,8 +15,8 @@ import kotlin.random.Random
 
 fun main() = application(
     configuration = configuration {
-        width = 416
-        height = 416
+        width = 800
+        height = 800
         windowResizable = true
     },
     program = KoloProgram()
@@ -74,30 +74,34 @@ class KoloProgram: Program() {
 
         drawer.isolated {
 
+            val view = drawer.bounds.biggestContainedBox()
+
             model = transform {
-                translate(width.toDouble(), 0.0)
+                translate(view.corner)
+                scale(view.width / offscreen.width.toDouble())
+                /*translate(offscreen.width / 2.0, 0.0)
                 scale(-1.0, 1.0, 1.0)
+                translate(-offscreen.width / 2.0, 0.0)*/
             }
 
             background(ColorRGBa.BLACK)
-            image(
-                offscreen,
-                source = offscreen.bounds,
-                target = drawer.bounds.biggestContainedBox()
-            )
+            image(offscreen)
 
             fontMap = font
 
-            recognitions.forEach {
+            recognitions.forEach { recognition ->
 
-                val color = colorMap[it.clazz] ?: ColorRGBa.BLACK
+                val color = colorMap[recognition.clazz] ?: ColorRGBa.BLACK
 
                 strokeWeight = 2.0
                 stroke = color
                 fill = null
-                rectangle(it.box)
+                rectangle(recognition.box)
                 fill = color
-                text("%s: %.0f".format(yolo.labels[it.clazz], it.confidence * 100), it.box.corner)
+                text("%s: %.0f".format(
+                    yolo.labels[recognition.clazz],
+                    recognition.confidence * 100
+                ), recognition.box.corner)
 
             }
 

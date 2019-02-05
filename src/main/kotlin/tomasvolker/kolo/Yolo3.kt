@@ -14,7 +14,9 @@ import tomasvolker.numeriko.core.interfaces.array1d.double.DoubleArray1D
 import tomasvolker.numeriko.core.interfaces.array1d.double.applyElementWise
 import tomasvolker.numeriko.core.interfaces.arraynd.double.DoubleArrayND
 import tomasvolker.numeriko.core.interfaces.arraynd.double.applyElementWise
+import tomasvolker.numeriko.core.interfaces.arraynd.generic.forEachIndices
 import tomasvolker.numeriko.core.interfaces.factory.doubleZeros
+import tomasvolker.numeriko.core.interfaces.iteration.fastForEachIndices
 import tomasvolker.numeriko.core.interfaces.slicing.get
 import java.io.File
 import java.util.*
@@ -148,10 +150,9 @@ class Yolo3: AutoCloseable {
 
 
     private val THRESHOLD = 0.5f
-    private val MAX_RESULTS = 15
 
 
-    private val graphPath = "data/yolo/yolo.pb"
+    private val graphPath = "yolo/tiny_yolo.pb"
 
     val graph: Graph = Graph().apply {
         importGraphDef(File(graphPath).readBytes())
@@ -168,9 +169,9 @@ class Yolo3: AutoCloseable {
 
     private fun runTensorFlow(image: ArrayImage): DoubleArrayND {
 
-        imageBuffer.arrayAlongAxis(axis = 0, index = 0).setValue(image.data)
-
-        imageBuffer.applyElementWise { 255 * it }
+        image.data.fastForEachIndices { (x, y, c) ->
+            imageBuffer[0, y, x, c] = 255 * image.data[x, y, c]
+        }
 
         return session.execute { 
             feed(INPUT_NAME, imageBuffer)

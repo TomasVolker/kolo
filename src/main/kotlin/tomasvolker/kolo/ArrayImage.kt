@@ -9,7 +9,6 @@ import tomasvolker.numeriko.core.interfaces.factory.doubleZeros
 import tomasvolker.numeriko.core.performance.forEach
 import kotlin.math.ceil
 import kotlin.math.floor
-import kotlin.math.roundToInt
 
 interface Image {
 
@@ -30,9 +29,9 @@ interface Image {
 
 interface Interpolator2D {
 
-    fun interpolate(array: DoubleArray2D, x: Double, y: Double): Double
+    fun interpolate(array: DoubleArray2D, i0: Double, i1: Double): Double
 
-    operator fun DoubleArray2D.get(x: Double, y: Double): Double = interpolate(this, x, y)
+    operator fun DoubleArray2D.get(i0: Double, i1: Double): Double = interpolate(this, i0, i1)
 
 }
 
@@ -65,8 +64,6 @@ class ArrayImage(
 
     override val width: Double = widthInPixels.toDouble()
     override val height: Double = heightInPixels.toDouble()
-
-
 
     var padding = ColorRGBa.BLACK
 
@@ -124,7 +121,7 @@ class ArrayImage(
 
     override operator fun get(x: Double, y: Double): ColorRGBa = ColorRGBa(red(x, y), green(x, y), blue(x, y))
 
-    operator fun DoubleArray2D.get(x: Double, y: Double) = interpolator2D.interpolate(this, x, y)
+    operator fun DoubleArray2D.get(i0: Double, i1: Double) = interpolator2D.interpolate(this, i0, i1)
 
     operator fun set(x: Int, y: Int, colorRGBa: ColorRGBa) {
         if (isValidPosition(x, y)) {
@@ -156,7 +153,7 @@ fun ColorBuffer.write(image: ArrayImage) {
 
     shadow.buffer.rewind()
 
-    forEach(image.height.toInt(), image.width.toInt()) { y, x ->
+    forEach(image.width.toInt(), image.height.toInt()) { x, y ->
         shadow.write(x, y, image.red(x, y), image.green(x, y), image.blue(x, y), 1.0)
     }
 
