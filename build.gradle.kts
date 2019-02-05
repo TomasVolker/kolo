@@ -28,17 +28,19 @@ dependencies {
     compile(kotlin("stdlib-jdk8"))
     testCompile("junit", "junit", "4.12")
 
-    api(group = "org.tensorflow", name = "tensorflow", version = "1.11.0")
+    compile(files("lib/komputo-0.0.1.jar"))
+    compile(group = "org.tensorflow", name = "tensorflow", version = "1.11.0")
     //api(group = "org.tensorflow", name = "libtensorflow_jni_gpu", version = "1.11.0")
 
-    api(group = "tomasvolker", name = "numeriko-core", version = "0.0.3")
-    testImplementation(group = "tomasvolker", name = "kyplot", version = "0.0.1")
+    compile(group = "tomasvolker", name = "numeriko-core", version = "0.0.3")
+    compile(group = "tomasvolker", name = "kyplot", version = "0.0.1")
 
 
-    testCompile("org.openrndr:openrndr-core:$openrndrVersion")
-    testCompile("org.openrndr:openrndr-extensions:$openrndrVersion")
-
-    testRuntime("org.openrndr:openrndr-gl3:$openrndrVersion")
-    testRuntime("org.openrndr:openrndr-gl3-natives-$openrndrOS:$openrndrVersion")
+    compile("org.openrndr:openrndr-core:$openrndrVersion")
+    compile("org.openrndr:openrndr-extensions:$openrndrVersion")
+    compile("org.openrndr:openrndr-ffmpeg:$openrndrVersion")
+    
+    runtime("org.openrndr:openrndr-gl3:$openrndrVersion")
+    runtime("org.openrndr:openrndr-gl3-natives-$openrndrOS:$openrndrVersion")
 
 }
