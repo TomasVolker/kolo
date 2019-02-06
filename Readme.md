@@ -3,15 +3,14 @@
 ![](demo.gif)
 
 This repository contains a proof of concept application
-for running the [Yolo](https://pjreddie.com/darknet/yolo/)
-object detection model on a video stream writen in the Kotlin
-programming language. The project uses an 
+written in the Kotlin programming language for running the [Yolo](https://pjreddie.com/darknet/yolo/)
+object detection model on a video stream. The project uses an 
 [experimental tensorflow based library](https://github.com/TomasVolker/komputo)
- for loading and executing the model.
+ to load and execute the model.
 
 To enable GPU, compile and add to the `lib` directory 
 the Tensorflow for Java native library 
-(`libtensorflow_jni.so` and `libtensorflow_jni.so`).
+(`libtensorflow_jni.so` and `libtensorflow_framework.so`).
 The frozen Tensorflow computation graphs have to be available in
  the `yolo` directory as `yolo.pb`and `tiny_yolo.pb`, 
  which can be obtained from 
