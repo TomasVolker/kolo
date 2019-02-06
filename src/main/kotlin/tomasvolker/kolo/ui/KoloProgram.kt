@@ -2,12 +2,14 @@ package tomasvolker.kolo.ui
 
 import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.default
+import org.openrndr.KEY_SPACEBAR
 import org.openrndr.Program
 import org.openrndr.application
 import org.openrndr.color.ColorRGBa
 import org.openrndr.configuration
 import org.openrndr.draw.colorBuffer
 import org.openrndr.draw.isolated
+import org.openrndr.ffmpeg.ScreenRecorder
 import org.openrndr.math.transforms.transform
 import tomasvolker.kolo.model.FfmpegVideo
 import tomasvolker.kolo.model.*
@@ -43,8 +45,8 @@ fun main(args: Array<out String>) {
         application(
             program = it,
             configuration = configuration {
-                width = 800
-                height = 800
+                width = 416
+                height = 416
                 windowResizable = true
             }
         )
@@ -90,7 +92,7 @@ class KoloProgram(
             video.next()
 
             buffer.write(
-                video.currentFrame.apply { padding = ColorRGBa.GRAY },
+                video.currentFrame,
                 sourceWindow = video.bounds.smallestContainingBox()
             )
 

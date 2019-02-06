@@ -1,5 +1,7 @@
 # KOLO: Kotlin Only Looks Once
 
+![](demo.gif)
+
 This repository contains a proof of concept application
 for running the [Yolo](https://pjreddie.com/darknet/yolo/)
 object detection model on a video stream writen in the Kotlin

@@ -61,6 +61,8 @@ class FfmpegVideo private constructor(url: String): Video {
 
     override fun next() {
 
+/*
+        // Drop frames
         val lastTimestamp = frame?.timestamp ?: System.currentTimeMillis() * 1000
 
         do {
@@ -72,6 +74,8 @@ class FfmpegVideo private constructor(url: String): Video {
             val frameSystemTime = lastSystemTimestamp + delta / 1000
 
         } while(System.currentTimeMillis() - frameSystemTime > 500)
+*/
+        frame = frameGrabber.grabImage()
 
         frame?.let {
             buffer.write(it)
