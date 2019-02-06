@@ -1,8 +1,10 @@
-package tomasvolker.kolo
+package tomasvolker.kolo.model
 
 import org.openrndr.color.ColorRGBa
 import org.openrndr.draw.ColorBuffer
 import org.openrndr.shape.Rectangle
+import tomasvolker.kolo.util.left
+import tomasvolker.kolo.util.top
 import tomasvolker.numeriko.core.dsl.I
 import tomasvolker.numeriko.core.interfaces.array2d.double.DoubleArray2D
 import tomasvolker.numeriko.core.interfaces.factory.doubleZeros
@@ -10,51 +12,7 @@ import tomasvolker.numeriko.core.performance.forEach
 import kotlin.math.ceil
 import kotlin.math.floor
 
-interface Image {
 
-    val bounds: Rectangle
-
-    val width: Double get() = bounds.width
-    val height: Double get() = bounds.height
-
-    fun red(x: Double, y: Double): Double
-    fun green(x: Double, y: Double): Double
-    fun blue(x: Double, y: Double): Double
-
-    operator fun get(x: Double, y: Double): ColorRGBa = ColorRGBa(red(x, y), green(x, y), blue(x, y))
-
-    operator fun get(x: Int, y: Int): ColorRGBa = get(x.toDouble(), y.toDouble())
-
-}
-
-interface Interpolator2D {
-
-    fun interpolate(array: DoubleArray2D, i0: Double, i1: Double): Double
-
-    operator fun DoubleArray2D.get(i0: Double, i1: Double): Double = interpolate(this, i0, i1)
-
-}
-
-object BilinearInterpolator: Interpolator2D {
-
-    override fun interpolate(array: DoubleArray2D, x: Double, y: Double): Double {
-        val minX = floor(x).toInt().coerceIn(0, array.shape0-1)
-        val maxX = ceil(x).toInt().coerceIn(0, array.shape0-1)
-        val minY = floor(y).toInt().coerceIn(0, array.shape1-1)
-        val maxY = ceil(y).toInt().coerceIn(0, array.shape1-1)
-
-        val q00 = array[minX, minY]
-        val q01 = array[minX, maxY]
-        val q10 = array[maxX, minY]
-        val q11 = array[maxX, maxY]
-
-        val xFactor = x % 1.0
-        val yFactor = y % 1.0
-
-        return q00 + xFactor * (q10 - q00) + yFactor * (q01 - q00) + xFactor * yFactor * (q00 + q11 - q01 - q10)
-    }
-
-}
 
 class ArrayImage(
     val widthInPixels: Int,
@@ -85,19 +43,19 @@ class ArrayImage(
 
     fun red(x: Int, y: Int): Double =
         if (isValidPosition(x, y))
-            red[x, y]
+            data[x, y, 0]
         else
             padding.r
 
     fun green(x: Int, y: Int): Double =
         if (isValidPosition(x, y))
-            green[x, y]
+            data[x, y, 1]
         else
             padding.g
 
     fun blue(x: Int, y: Int): Double =
         if (isValidPosition(x, y))
-            blue[x, y]
+            data[x, y, 2]
         else
             padding.b
 

@@ -4,6 +4,8 @@
 build/
 out/
 
-lib/
+lib/libtensorflow_jni.so
+lib/libtensorflow_framework.so
 
-yolo/
+yolo/tiny_yolo.pb
+yolo/yolo.pb

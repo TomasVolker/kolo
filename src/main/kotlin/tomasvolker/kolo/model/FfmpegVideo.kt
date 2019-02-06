@@ -1,4 +1,4 @@
-package tomasvolker.kolo
+package tomasvolker.kolo.model
 
 import org.openrndr.color.ColorRGBa
 import org.openrndr.ffmpeg.adopted.FFmpegFrameGrabber
@@ -8,15 +8,13 @@ import org.openrndr.draw.colorBuffer as _colorBuffer
 import java.io.File
 import java.nio.ByteBuffer
 
-class WebcamVideo private constructor(url: String): Video {
+class FfmpegVideo private constructor(url: String): Video {
 
     val frameGrabber = FFmpegFrameGrabber(url).apply {
         start()
     }
 
-    private var frame: Frame? = run {
-        frameGrabber.grabImage()
-    }
+    private var frame: Frame? = frameGrabber.grabImage()
 
     var lastSystemTimestamp = System.currentTimeMillis()
 
@@ -84,22 +82,19 @@ class WebcamVideo private constructor(url: String): Video {
     }
 
     companion object {
-        fun fromURL(url: String): WebcamVideo {
-            return WebcamVideo(url)
-        }
 
-        fun fromFile(filename: String): WebcamVideo {
-            return WebcamVideo(File(filename).toURI().toURL().toExternalForm())
-        }
+        fun fromURL(url: String): FfmpegVideo = FfmpegVideo(url)
 
-        fun listDevices(): List<String> {
-            return FFmpegFrameGrabber.getDeviceDescriptions().toList()
-        }
+        fun fromFile(file: File) = FfmpegVideo(file.toURI().toURL().toExternalForm())
+
+        fun fromFile(filename: String) = fromFile(File(filename))
+
+        fun listDevices(): List<String> =
+            FFmpegFrameGrabber.getDeviceDescriptions().toList()
 
         fun defaultDevice(): String {
             val osName = System.getProperty("os.name").toLowerCase()
-            val device: String
-            device = when {
+            return when {
                 "windows" in osName -> {
                     "video=Integrated Webcam"
                 }
@@ -111,25 +106,6 @@ class WebcamVideo private constructor(url: String): Video {
                 }
                 else -> throw RuntimeException("unsupported os: $osName")
             }
-            return device
-        }
-
-        fun defaultInputFormat(): String? {
-            val osName = System.getProperty("os.name").toLowerCase()
-            val format: String?
-            format = when {
-                "windows" in osName -> {
-                    null
-                }
-                "mac os x" in osName -> {
-                    null
-                }
-                "linux" in osName -> {
-                    "mjpeg"
-                }
-                else -> throw RuntimeException("unsupported os: $osName")
-            }
-            return format
         }
 
         fun fromDevice(
@@ -137,11 +113,10 @@ class WebcamVideo private constructor(url: String): Video {
             width: Int = -1,
             height: Int = -1,
             framerate: Double = -1.0,
-            inputFormat: String? = defaultInputFormat()
-        ): WebcamVideo {
+            inputFormat: String? = null
+        ): FfmpegVideo {
             val osName = System.getProperty("os.name").toLowerCase()
-            val format: String
-            format = when {
+            val format = when {
                 "windows" in osName -> {
                     "dshow"
                 }
@@ -154,17 +129,17 @@ class WebcamVideo private constructor(url: String): Video {
                 else -> throw RuntimeException("unsupported os: $osName")
             }
 
-            val player = WebcamVideo(deviceName)
-            player.frameGrabber.inputFormat = inputFormat
-            player.frameGrabber.format = format
-            if (width != -1 && height != -1) {
-                player.frameGrabber.imageWidth = width
-                player.frameGrabber.imageHeight = height
+            return FfmpegVideo(deviceName).apply {
+                frameGrabber.inputFormat = inputFormat
+                frameGrabber.format = format
+                if (width != -1 && height != -1) {
+                    frameGrabber.imageWidth = width
+                    frameGrabber.imageHeight = height
+                }
+                if (framerate != -1.0) {
+                    frameGrabber.frameRate = framerate
+                }
             }
-            if (framerate != -1.0) {
-                player.frameGrabber.frameRate = framerate
-            }
-            return player
         }
     }
 
