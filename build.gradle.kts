@@ -1,6 +1,7 @@
 import org.gradle.internal.os.OperatingSystem
 
 plugins {
+    application
     kotlin("jvm") version "1.3.20"
 }
 
@@ -45,3 +46,15 @@ dependencies {
     runtime("org.openrndr:openrndr-gl3-natives-$openrndrOS:$openrndrVersion")
 
 }
+
+application {
+
+    mainClassName = "tomasvolker.kolo.ui.KoloProgramKt"
+
+    applicationDefaultJvmArgs += "-Djava.library.path=./lib"
+
+    if (openrndrOS == "macos")
+        applicationDefaultJvmArgs += "-XstartOnFirstThread"
+
+}
+
