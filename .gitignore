@@ -6,4 +6,5 @@ out/
 
 lib/
 
-yolo/
+yolo/tiny_yolo.pb
+yolo/yolo.pb

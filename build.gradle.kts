@@ -35,6 +35,7 @@ dependencies {
     compile(group = "tomasvolker", name = "numeriko-core", version = "0.0.3")
     compile(group = "tomasvolker", name = "kyplot", version = "0.0.1")
 
+    compile("com.xenomachina:kotlin-argparser:2.0.7")
 
     compile("org.openrndr:openrndr-core:$openrndrVersion")
     compile("org.openrndr:openrndr-extensions:$openrndrVersion")

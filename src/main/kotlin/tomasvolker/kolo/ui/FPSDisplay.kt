@@ -1,4 +1,4 @@
-package tomasvolker.kolo
+package tomasvolker.kolo.ui
 
 import org.openrndr.Extension
 import org.openrndr.Program

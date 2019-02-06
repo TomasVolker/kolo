@@ -1,4 +1,4 @@
-package tomasvolker.kolo
+package tomasvolker.kolo.util
 
 import org.openrndr.math.Vector2
 import org.openrndr.shape.Rectangle
